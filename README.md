@@ -33,6 +33,26 @@ Start the container with e.g. `docker run -dit -p 9993:9993/udp --name=zerotier-
 Alright, your very own ZeroTier Controller is up and running.  
 Have fun!
 
+## Configuring a new network
+Below are some sample calls to get your new controller to assign IP addresses to new members on a private network
+
+Add a managed route
+
+```curl -H "X-ZT1-Auth: $API_SECRET" -H "Content-Type: application/json" -X POST -d '{"routes": [{"target": "10.250.50.0/24", "via": null, "flags":0, "metric":0}]}' $CONTROLLER_ADDRESS/controller/network/$NETWORK_ID```
+
+Add IP assignment pools (make sure they are within the managed route)
+
+```curl -H "X-ZT1-Auth: $API_SECRET" -H "Content-Type: application/json" -X POST -d '{"ipAssignmentPools": [{"ipRangeStart": "10.250.50.1", "ipRangeEnd": "10.250.50.254"}]}' $CONTROLLER_ADDRESS/controller/network/$NETWORK_ID```
+
+Set IPv4 assignment mode
+
+```curl -H "X-ZT1-Auth: $API_SECRET" -H "Content-Type: application/json" -X POST -d '{"v4AssignMode":{"zt": "true"}}' $CONTROLLER_ADDRESS/controller/network/$NETWORK_ID```
+
+
+Authorize a new member on a private network
+
+```curl --H"X-ZT1-Auth: $API_SECRET" 5-H "Content-Type: application/json" -X POST -d '{"authorized":"true"}' $CONTROLLER_ADDRESS/controller/network/$NETWORK_ID/member/$MEMBER_ID```
+
 ## Credits
 This project is powered by the [ZeroTier One](https://github.com/zerotier/ZeroTierOne) API.  
 Go ahead and say **thank you**!
